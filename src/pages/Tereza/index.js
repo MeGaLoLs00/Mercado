@@ -1,35 +1,37 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-export default function SignUp() {
+
+
+
+export default function Tereza() {
     const navigation = useNavigation();
     const [nome, setNome] = useState('');
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [confirmarSenha, setConfirmarSenha] = useState('');
+    
 
     const cadastrarUsuario = async () => {
         try {
-            const response = await axios.post('http://seu-endereco-da-api/criar-usuario', {
+            const response = await api.post('http://localhost:3008/criar-usuario', {
                 NM_Cliente: nome,
                 email,
                 senha,
-            });
+            })
 
             // Verifica se a resposta da API indica sucesso
             if (response.status === 200) {
-                Alert.alert('Cadastro bem-sucedido', 'Seu cadastro foi realizado com sucesso!');
+                Alert.alert('Cadastro bem-sucedido', 'Seu cadastro foi realizado com sucesso!')
                 // Navega para a próxima tela ou realiza outra ação desejada
             } else {
-                Alert.alert('Erro', 'Erro ao cadastrar usuário. Tente novamente.');
+                Alert.alert('Erro', 'Erro ao cadastrar usuário. Tente novamente.')
             }
         } catch (error) {
-            console.error('Erro ao cadastrar usuário:', error);
-            Alert.alert('Erro', 'Erro ao cadastrar usuário. Tente novamente.');
+            console.error('Erro ao cadastrar usuário:', error)
+            Alert.alert('Erro', 'Erro ao cadastrar usuário. Tente novamente.')
         }
     };
 
@@ -48,14 +50,7 @@ export default function SignUp() {
                     onChangeText={setNome}
                 />
 
-                <Text style={styles.title}>Nome de usuário</Text>
-                <TextInput
-                    placeholder="Digite um nome de Usuário  "
-                    style={styles.input}
-                    value={nomeUsuario}
-                    onChangeText={setNomeUsuario}
-                />
-
+            
                 <Text style={styles.title}>Email</Text>
                 <TextInput
                     placeholder="Digite um Email "
@@ -73,14 +68,7 @@ export default function SignUp() {
                     onChangeText={setSenha}
                 />
 
-                <Text style={styles.title}>Confirmar Senha</Text>
-                <TextInput
-                    placeholder="Repita a senha acima  "
-                    style={styles.input}
-                    secureTextEntry={true}
-                    value={confirmarSenha}
-                    onChangeText={setConfirmarSenha}
-                />
+                
 
                 <TouchableOpacity
                     style={styles.button}

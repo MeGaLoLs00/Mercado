@@ -1,71 +1,140 @@
-import React, {useState} from "react";
-import { View, Text,StyleSheet,TextInput,TouchableOpacity } from 'react-native';
-
+import React from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert  } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {useNavigation} from '@react-navigation/native';
-
-import {useForm,Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import api from '../BD/api'; // Importe o seu arquivo api.js
 
 const schema = yup.object({
-    username:yup.string().required("Informe seu nome completo"),
-    nickname:yup.string().required("informe seu Apelido"),
-    email:yup.string().email("Email Invalido").required("Informe seu email"),
-    password:yup.string().min(6,"A sua senha deve pelo menos ter 6 digitos").required("Informe sua senha")
-
-
-})
+  username: yup.string().required("Informe seu nome completo"),
+  Nickanme: yup.string().required("Informe seu Apelido"),
+  email: yup.string().email("Email Inválido").required("Informe seu email"),
+  password: yup.string().min(6, "A sua senha deve ter pelo menos 6 dígitos").max(10, "A sua senha não pode ter mais de 10 dígitos").required("Informe sua senha")
+});
 
 export default function RegisIn() {
-   const{ control, handleSubmit, formStates:{errors}} = useForm({
-        resolver: yupResolver(schema)
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
 
-   })
+  const handleSignIn = async (data) => {
+    try {
+      // Chama a API para criar um novo usuário
+      const response = await api.post('/criar-usuario', {
+        NM_Cliente: data.username,
+        Nickanme:data.nickname,
+        email: data.email,
+        senha: data.password,
+      });
 
-   function handleSignIn(data){
-    console.log(data)
-   }
-   
-   
-   
-    return(
-        <View style={styles.container}>
-             <Animatable.View animation="fadeInLeft" delay={600} style={styles.containerHeader}>
-                <Text style={styles.message}>Cadastro</Text>
+      // Exibe mensagem de sucesso
+      Alert.alert('Cadastro bem-sucedido', response.data.message);
 
-            </Animatable.View>
+      // Limpa os campos após o cadastro bem-sucedido (opcional)
+      // reset();
+    } catch (error) {
+      if (error.response) {
+        // O servidor retornou uma resposta com um status diferente de 2xx
+        console.error('Erro no servidor:', error.response.data);
+      } else if (error.request) {
+        // A solicitação foi feita, mas não houve resposta do servidor
+        console.error('Sem resposta do servidor');
+      } else {
+        // Algo aconteceu ao configurar a solicitação que desencadeou um erro
+        console.error('Erro ao configurar a solicitação:', error.message);
+      }
+      console.error('Erro geral:', error);
+    }
+  };
 
-            <Animatable.View animation='fadeInUp' style={styles.containerForm} >
-                <Controller
-                    control={control}
-                    name="username"
-                    render={({field: { onChange, onBlur, value} }) => (
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={onChange}
-                            onBlur={onBlur}// Chamado quando o textInput é Tocado.
-                            value={value}
-                            placeholder="Digite seu nome completo"
-                        />
-                    )}                      
-                />
+  return (
+    <View style={styles.container}>
+      <Animatable.View animation="fadeInLeft" delay={600} style={styles.containerHeader}>
+        <Text style={styles.message}>Cadastro</Text>
+      </Animatable.View>
 
-                
+      <Animatable.View animation='fadeInUp' style={styles.containerForm}>
+        
+        <Controller //nome
+          control={control}
+          name="username"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                placeholder="Digite seu nome completo"
+              />
+              {errors.username && <Text style={styles.labelError}>{errors.username?.message}</Text>}
+            </>
+          )}
+        />
 
-                 
+        <Controller //apelido
+          control={control}
+          name="Nickanme"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                placeholder="Digite seu apelido!"
+              />
+              {errors.nickname && <Text style={styles.labelError}>{errors.nickname?.message}</Text>}
+            </>
+          )}
+        />
 
-                
-                    
+        <Controller // email
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                placeholder="Digite seu Email"
+              />
+              {errors.email && <Text style={styles.labelError}>{errors.email?.message}</Text>}
+            </>
+          )}
+        />
 
-            </Animatable.View>
+        <Controller // senha
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                placeholder="Digite seu senha"
+              />
+              {errors.password && <Text style={styles.labelError}>{errors.password?.message}</Text>}
+            </>
+          )}
+        />
+      </Animatable.View>
 
-        </View>
-
-    );
-    
-
+      <TouchableOpacity
+        style={styles.buttonRegister}
+        onPress={handleSubmit(handleSignIn)}
+      >
+        <Text style={styles.registerText}>Criar Conta!</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
+
 
 const styles = StyleSheet.create({
     container:{
@@ -78,6 +147,7 @@ const styles = StyleSheet.create({
     },
 
     containerHeader:{
+        flax:1,
         marginTop:'14%',
         marginBottom:'8%',
         paddingStart:'5%'
@@ -85,19 +155,29 @@ const styles = StyleSheet.create({
     },
 
     message:{
-        fontSize: 34,
+        paddingStart:'10%',
+        fontSize: 40,
         fontWeight:'bold',
-        color:'#FFF'
-
+        color:'#FFF',
+        marginBottom:'20%',
+        marginTop:'10%',
     },
     
     containerForm:{
+        flex:2,
         backgroundColor:'#FFF',
-        flex:1,
-        borderTopLeftRadius:25,
+        borderTopLeftRadius: 25,
         borderTopRightRadius:25,
         paddingStart:'5%',
-        paddingEnd:'5%'
+        paddingEnd:'5%',
+        bottom: 10,
+        borderWidth: 2,
+        borderRadius: 5,
+        marginRight: 5,
+        marginLeft: 5,
+        borderColor: '#FFFC00',
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25
 
     },
 
@@ -145,7 +225,7 @@ const styles = StyleSheet.create({
 
     labelError:{
         alignSelf:'flex-start',
-        color:'#fff375b',
+        color:'#ff0000',
         marginBottom:8,
     }
 

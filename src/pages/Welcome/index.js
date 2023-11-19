@@ -16,18 +16,15 @@ export default function Welcome() {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <View style={styles.containerLogo}>
+            
                <Animatable.Image
                     animation="flipInY"
-                    source={require('../../assets/Logo.png')}
-                    style={{width: '100%'}}
-                    resizeMode="contain"
+                    source={require('../../assets/Logo.png')}style={styles.logo}
                /> 
-            </View>
 
             <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
-                <Text style={styles.title}>Organize suas compras de quelquer lugar!</Text>
-                <Text style={styles.text}> Faca o login</Text>
+                <Text style={styles.title}>O diferencial para sua lista de compras!</Text>
+                <Text style={styles.text}> Faça o login</Text>
 
                 <TouchableOpacity 
                     style={styles.button}
@@ -47,23 +44,30 @@ export default function Welcome() {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:'#3498DA',
-
+        backgroundColor:'#3498DA', 
     },
-    containerLogo:{
-        flex:2,
-        backgroundColor:'#3498',
+    logo:{
+        flex:5,
+        backgroundColor:'#3498DA',
         justifyContent:'center',
-        alignItems:'Center'
-
+        width: '100%',
+        resizeMode:"contain",
     },
     containerForm:{
-        flex:1,
+        flex:2,
         backgroundColor:'#FFF',
         borderTopLeftRadius: 25,
         borderTopRightRadius:25,
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius:25,
+        marginRight: 10,
+        marginLeft: 10,
+        bottom: 10,
         paddingStart:'5%',
-        paddingEnd:'5%'
+        paddingEnd:'5%',
+        borderWidth: 2,
+        borderRadius: 5,
+        borderColor: '#FFFC00'
         
     },
 
@@ -79,20 +83,19 @@ const styles = StyleSheet.create({
        color:'#a1a1a1',
        fontSize:15
 
-
     },
 
     button:{
-        position:'absolute',
+        position: 'absolute',
         backgroundColor:'#3498DA',
         borderRadius: 50,
         paddingVertical:8,
         width: '100%',
-        alignSelf:'Center',
-        bottom: '15%',
-        alignItems:'center',
-        justifyContent:'center',
-        borderWidth: 1, 
+        alignSelf:'center', //botão
+        bottom: '25%', //botão
+        alignItems:'center', //texto do botão
+        justifyContent:'center', // texto do botão
+        borderWidth: 2, 
         borderColor: '#FFFC00'
        
     },

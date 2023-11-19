@@ -6,6 +6,8 @@ import * as Animatable from 'react-native-animatable';
 import {useNavigation} from '@react-navigation/native'
 
 
+
+
 export default function SignIn() {
     const navigation = useNavigation();
     
@@ -33,7 +35,7 @@ export default function SignIn() {
 
                 <TouchableOpacity 
                     style={styles.button}
-                    onPress={ () =>  navigation.navigate('TelaInicio')}
+                    onPress={ () =>  navigation.navigate('Home')}
                 >
                     <Text style={styles.buttonText}>Acessar</Text>
 
@@ -47,7 +49,13 @@ export default function SignIn() {
 
                 </TouchableOpacity>
 
-                    
+                <TouchableOpacity 
+                    style={styles.buttonRegister}
+                    onPress={ () =>  navigation.navigate('RegisIn')}
+                >
+                    <Text style={styles.registerText}> Esqueceu a senha? Clique aqui </Text>
+
+                </TouchableOpacity>
 
             </Animatable.View>
 
@@ -61,30 +69,36 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'#3498DA'
-
     },
 
     containerHeader:{
-        marginTop:'14%',
-        marginBottom:'8%',
-        paddingStart:'5%'
-
+        flex: 1,
     },
 
     message:{
-        fontSize: 28,
+        paddingStart:'10%',
+        fontSize: 40,
         fontWeight:'bold',
-        color:'#FFF'
-
+        color:'#FFF',
+        marginBottom:'20%',
+        marginTop:'10%',
     },
     
     containerForm:{
+        flex:2,
         backgroundColor:'#FFF',
-        flex:1,
-        borderTopLeftRadius:25,
+        borderTopLeftRadius: 25,
         borderTopRightRadius:25,
         paddingStart:'5%',
-        paddingEnd:'5%'
+        paddingEnd:'5%',
+        bottom: 10,
+        borderWidth: 2,
+        borderRadius: 5,
+        marginRight: 5,
+        marginLeft: 5,
+        borderColor: '#FFFC00',
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25
 
     },
 
@@ -123,7 +137,7 @@ const styles = StyleSheet.create({
     },
 
     buttonRegister:{
-        marginTop:14,
+        marginTop:10,
         alignSelf:'center'
     },
 
