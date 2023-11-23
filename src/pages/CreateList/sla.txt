@@ -1,0 +1,102 @@
+import React, { useState } from "react";
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import { useForm, Controller } from 'react-hook-form';
+import * as yup from 'yup';
+import api from '../../../Server/api';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../../AuthContext/AuthContext'; // Importe o contexto de autenticação
+
+const schema = yup.object().shape({
+  nome: yup.string().required('Nome da Lista é obrigatório'),
+});
+
+export default function CreateList() {
+  const navigation = useNavigation();
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+  })
+  const { userId } = useAuth(); // Obtenha o ID do cliente do contexto de autenticação
+
+  const [nome, setNome] = useState('');
+
+  const onSubmit = async (data) => {
+    // Call your API here to create a list
+    // For simplicity, let's assume your API endpoint is 'http://your-api-endpoint/criar-lista'
+    try {
+      const response = await api.post('/criar-lista', {
+          id_Cliente: userId, // replace with actual client ID
+          nome: data.nome,
+      });
+
+      if (response.ok) {
+        console.log('Lista criada com sucesso');
+        navigation.navigate('ShoppingListTest');
+      } else {
+        console.error('Erro ao criar lista:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erro ao criar lista:', error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require('../../assets/Logo.png')}
+        style={styles.logo}
+      />
+
+      <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
+        <View style={styles.adicionarProduto}>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                style={styles.input1}
+                placeholder="Nome da Lista"
+                value={nome}
+                onChangeText={(text) => {
+                  setNome(text);
+                  field.onChange(text);
+                }}
+              />
+            )}
+            name="nome"
+            defaultValue=""
+          />
+          {errors.nome && <Text style={styles.errorText}>{errors.nome.message}</Text>}
+
+          <View style={styles.inputContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('ShoppingListTest')}
+            >
+              <Text style={styles.buttonText}> Adicionar produtos </Text>
+            </TouchableOpacity>
+
+            <View style={styles.space} />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('Home')}
+            >
+              <Text style={styles.buttonText}> Voltar </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Animatable.View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  // ... existing styles
+
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+});

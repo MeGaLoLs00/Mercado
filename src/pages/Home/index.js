@@ -21,7 +21,7 @@ export default function Home() {
                
                 <TouchableOpacity 
                     style={styles.button}
-                    onPress={ () =>  navigation.navigate('ShoppingList')}
+                    onPress={ () =>  navigation.navigate('CreateList')}
                 >
                     <Text style={styles.buttonText}>Criar Lista</Text>
 
@@ -104,9 +104,8 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 2, 
-        borderColor: '#FFFC00'
-
+        borderWidth: 2,
+        borderColor: '#FFFC00' 
     },
 
     space: {

@@ -1,16 +1,24 @@
 import React from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert  } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';//
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import api from '../BD/api'; // Importe o seu arquivo api.js
+import api from '../../../Server/api'; // Importe o seu arquivo api.js
+import bcrypt from 'bcryptjs'; //criptografar a senha
 
 const schema = yup.object({
-  username: yup.string().required("Informe seu nome completo"),
-  Nickanme: yup.string().required("Informe seu Apelido"),
-  email: yup.string().email("Email Inválido").required("Informe seu email"),
-  password: yup.string().min(6, "A sua senha deve ter pelo menos 6 dígitos").max(10, "A sua senha não pode ter mais de 10 dígitos").required("Informe sua senha")
+  NM_Cliente: yup.string()
+    .required("Informe seu nome completo"),
+  nickname: yup.string()
+    .required("Informe seu Apelido"),
+  email: yup.string()
+    .email("Email Inválido")
+    .required("Informe seu email"),
+  senha: yup.string()
+    .min(6, "A sua senha deve ter pelo menos 6 dígitos")
+    .max(10, "A sua senha não pode ter mais de 10 dígitos")
+    .required("Informe sua senha")
 });
 
 export default function RegisIn() {
@@ -19,13 +27,16 @@ export default function RegisIn() {
   });
 
   const handleSignIn = async (data) => {
+    console.log('Dados enviados para criar usuário:', data);
     try {
+      //const CripSenha = bcrypt.hashSync(data.senha, 10);
+      
       // Chama a API para criar um novo usuário
       const response = await api.post('/criar-usuario', {
-        NM_Cliente: data.username,
-        Nickanme:data.nickname,
+        NM_Cliente: data.NM_Cliente,
+        nickname:data.nickname,
         email: data.email,
-        senha: data.password,
+        senha: data.senha,
       });
 
       // Exibe mensagem de sucesso
@@ -58,7 +69,7 @@ export default function RegisIn() {
         
         <Controller //nome
           control={control}
-          name="username"
+          name="NM_Cliente"
           render={({ field: { onChange, onBlur, value } }) => (
             <>
               <TextInput
@@ -68,14 +79,14 @@ export default function RegisIn() {
                 value={value}
                 placeholder="Digite seu nome completo"
               />
-              {errors.username && <Text style={styles.labelError}>{errors.username?.message}</Text>}
+              {errors.NM_Cliente && <Text style={styles.labelError}>{errors.NM_Cliente?.message}</Text>}
             </>
           )}
         />
 
         <Controller //apelido
           control={control}
-          name="Nickanme"
+          name="nickname"
           render={({ field: { onChange, onBlur, value } }) => (
             <>
               <TextInput
@@ -109,7 +120,7 @@ export default function RegisIn() {
 
         <Controller // senha
           control={control}
-          name="password"
+          name="senha"
           render={({ field: { onChange, onBlur, value } }) => (
             <>
               <TextInput
@@ -117,9 +128,10 @@ export default function RegisIn() {
                 onChangeText={onChange}
                 onBlur={onBlur}
                 value={value}
+                secureTextEntry={true}
                 placeholder="Digite seu senha"
               />
-              {errors.password && <Text style={styles.labelError}>{errors.password?.message}</Text>}
+              {errors.senha && <Text style={styles.labelError}>{errors.senha?.message}</Text>}
             </>
           )}
         />
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
     },
 
     containerHeader:{
-        flax:1,
+        flex:1,
         marginTop:'14%',
         marginBottom:'8%',
         paddingStart:'5%'
